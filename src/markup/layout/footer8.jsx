@@ -1,0 +1,66 @@
+import React, { Component } from 'react';
+import Link  from 'next/link';
+
+
+
+class Footer8 extends Component {
+
+
+    render() {
+        return (
+            <>
+            <footer class="site-footer frame-box ">
+                <div class="footer-top">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-6 col-sm-6 col-lg-5">
+                                <div class="widget widget_getintuch">
+                                    <h4 class="footer-title">Registered Office Address: </h4>
+                                    <ul class="info-contact">
+                                        <li>
+                                            <span>
+                                                <i class="fa fa-map-marker"></i> Demo address #8901 marmora road chi minh city, vietnam demo address #8901 marmora road chi minh city, vietnam
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-3">
+                                <div class="widget">
+                                    <h4 class="footer-title">Contact Info</h4>
+                                    <ul class="ft-contact">
+                                        <li>Telephone: <span>+91 123 456 7890</span></li>
+                                        <li>Mobile: <span>+91 123 456 7890</span></li>
+                                        <li>E Email: <Link href="#">exemple@gmail.com</Link></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div class="col-md-6 col-sm-6 col-lg-4">
+                                <div class="widget">
+                                    <h4 class="footer-title">Follow Us</h4>
+                                    <ul class="ft-social">
+                                        <li><Link href="#" class="site-button facebook sharp"><i class="fa fa-facebook"></i></Link></li>
+                                        <li><Link href="#" class="site-button linkedin sharp"><i class="fa fa-linkedin"></i></Link></li>
+                                        <li><Link href="#" class="site-button twitter sharp"><i class="fa fa-twitter"></i></Link></li>
+                                        <li><Link href="#" class="site-button instagram sharp"><i class="fa fa-instagram"></i></Link></li>
+                                        <li><Link href="#" class="site-button whatsapp sharp"><i class="fa fa-whatsapp"></i></Link></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="footer-bottom">
+                    <div class="container">
+                        <div class="row">
+                            <div class="col-md-12 text-center">Copyright © All rights reserved. 2021</div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+            </>
+        )
+    }
+}
+export default Footer8;

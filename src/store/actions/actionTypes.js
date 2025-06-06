@@ -1,0 +1,16 @@
+//Action AUTH
+export const AUTH_START = "AUTH_START";
+export const AUTH_SUCCESS = "AUTH_SUCCESS";
+export const AUTH_FAIL = "AUTH_FAIL";
+export const AUTH_LOGOUT = "AUTH_LOGOUT";
+export const AUTH_LOAD = "AUTH_LOAD";
+
+//ACTION REGISTER
+export const REGISTER_START = "REGISTER_START";
+export const REGISTER_SUCCESS = "REGISTER_SUCCESS";
+export const REGISTER_FAIL = "REGISTER_FAIL";
+export const REGISTER_LOAD = "REGISTER_LOAD";
+export const REGISTER_CLEAR = "REGISTER_CLEAR";
+
+//ACTION ROUTER
+export const ROUTER_CHOOSE = "ROUTER_CHOOSE";
