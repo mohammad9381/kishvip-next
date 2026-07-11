@@ -16,15 +16,17 @@ class OrderController {
     const product = await Product.findByPk(product_id);
 
     const orders = await Order.findAll({
-      product_id: product_id,
-      date_mehman: date_mehman,
-      is_trashed: 0,
-      is_del: 0,
+      where: {
+        product_id: product_id,
+        date_mehman: date_mehman,
+        is_trashed: 0,
+        is_del: 0,
+      },
     });
 
     let used = 0;
 
-    orders.map((order) => {
+    orders.forEach((order) => {
       used = order.tedad + used;
     });
 
@@ -39,15 +41,15 @@ class OrderController {
 
   async getOrders(product_id, date_mehman) {
     try {
-      const whereRaw = {};
+      const whereClause = {};
 
-      if (product_id) whereRaw.product_id = product_id;
+      if (product_id) whereClause.product_id = product_id;
 
       if (date_mehman && date_mehman !== null)
-        whereRaw.date_mehman = date_mehman;
+        whereClause.date_mehman = date_mehman;
 
       const orders = await Order.findAll({
-        where: whereRaw,
+        where: whereClause,
         include: ["product"],
       });
 

@@ -48,12 +48,10 @@ class PaymentController {
 
   async getPaymentByUniqCode(uniq_code) {
     try {
-      const payment = await Payment.findOne(
-        {
-          uniq_code: uniq_code,
-        },
-        { raw: true }
-      );
+      const payment = await Payment.findOne({
+        where: { uniq_code: uniq_code },
+        raw: true,
+      });
 
       return payment;
     } catch (err) {
@@ -61,6 +59,7 @@ class PaymentController {
       return null;
     }
   }
+
   async updatePaymentZibal(id, resp) {
     try {
       if (!resp.status) {
@@ -89,7 +88,6 @@ class PaymentController {
 
       if (p["status"] === "success") {
         const invController = new InvoiceController();
-        console.log("success");
 
         const invoice = await invController.getInvoice(p["invoice_id"]);
         const ress = await setFinalizeTemp(
@@ -97,22 +95,21 @@ class PaymentController {
           0,
           false
         );
-        const resp = await invController.setFinalInvoice(
+        const finalInvoice = await invController.setFinalInvoice(
           invoice["id"],
           ress.data
         );
-        const tickSControler = new TicketController();
+        const ticketController = new TicketController();
         await Promise.all(
           ress.data.eventsTickets.map(async (tick) => {
-            await tickSControler.setTicket(
+            await ticketController.setTicket(
               invoice["id"],
               invoice["cellphone"],
               tick
             );
           })
         );
-        console.log("return", resp);
-        return resp;
+        return finalInvoice;
       } else {
         return p;
       }

@@ -1,6 +1,5 @@
 import React from "react";
 
-import axois from "utilsFolder/fetchClient";
 import { event_categories } from "constants/event_categories.constant";
 import Services from "containers/services";
 import Header from "components/layout/header7";
@@ -9,12 +8,8 @@ import Wrapper from "hoc/Wrapper/Wrapper";
 import { Button } from "react-bootstrap";
 
 class ServiceCategoryPage extends React.Component {
-  componentDidMount() {}
-
   render() {
-    console.log(this.props);
     const { data } = this.props;
-    console.log(data);
 
     return (
       <Wrapper>
@@ -48,32 +43,54 @@ export async function getServerSideProps(context) {
   const tt = title.split("-").join(" ").trim();
 
   let xfind = event_categories.find((ev) => {
-    console.log(ev, tt);
     return ev.title.trim() === tt;
   });
 
-  const res = await fetch(
-    process.env.REACT_APP_API_URL + "/api/servicesCategory?id=" + xfind.id
-  );
-  const data = await res.json();
-
-  console.log(
-    process.env.REACT_APP_API_URL + "/api/servicesCategory?id=" + xfind.id
-  );
-
-  console.log("ccc", res);
-
-  return {
-    props: {
-      key: "service category",
-      data: {
-        data: data,
-        title: xfind.title,
+  // guard: اگر دسته‌بندی پیدا نشد
+  if (!xfind) {
+    return {
+      props: {
+        key: "service category",
+        data: {
+          data: { data: [] },
+          title: title,
+        },
+        title: title,
+        description: null,
       },
-      title: xfind.title,
-      description: null,
-    },
-  };
+    };
+  }
+
+  try {
+    const res = await fetch(
+      process.env.REACT_APP_API_URL + "/api/servicesCategory?id=" + xfind.id
+    );
+    const data = await res.json();
+
+    return {
+      props: {
+        key: "service category",
+        data: {
+          data: data,
+          title: xfind.title,
+        },
+        title: xfind.title,
+        description: null,
+      },
+    };
+  } catch (err) {
+    return {
+      props: {
+        key: "service category",
+        data: {
+          data: { data: [] },
+          title: xfind.title,
+        },
+        title: xfind.title,
+        description: null,
+      },
+    };
+  }
 }
 
 export default ServiceCategoryPage;

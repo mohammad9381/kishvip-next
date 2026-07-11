@@ -1,6 +1,10 @@
 import UserController from "../../src/backend/controllers/user.controller";
 
 export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
   var Kavenegar = require("kavenegar");
   var api = Kavenegar.KavenegarApi({
     apikey: process.env.REACT_APP_KAVE_API_KEY,
@@ -9,11 +13,11 @@ export default function handler(req, res) {
   let userC = new UserController();
 
   userC
-    .getCode(req.query.cellphone)
+    .getCode(req.body.cellphone)
     .then((resp) => {
       api.VerifyLookup(
         {
-          receptor: req.query.cellphone,
+          receptor: req.body.cellphone,
           token: resp,
           template: "registerverifykishvio",
         },

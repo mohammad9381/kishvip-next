@@ -29,7 +29,7 @@ export const ServicesDetailAsync = async (
 
     if (StateCode) data = data + "&StateCode=" + StateCode;
 
-    if (CityCode) data = data + "&StateCode=" + CityCode;
+    if (CityCode) data = data + "&CityCode=" + CityCode;
 
     await getToken();
     return touristPanelClient.get("/B2C/Booking/ServicesDetailAsync?" + data, {

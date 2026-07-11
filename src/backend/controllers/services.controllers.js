@@ -58,23 +58,22 @@ class ServicesControllers {
             );
           });
           if (!ff) {
-            getService(d.serviceUniqueId)
-              .then(async (rr) => {
-                await Service.create({
-                  serviceUniqueId: d.serviceUniqueId,
-                  title: rr.data.title,
-                  description: rr.data.description,
-                  rules: rr.data.rules,
-                  eventCategory: rr.data.eventCategory,
-                  coverImage: rr.data.coverImage,
-                  enumEventCategory: rr.data.enumEventCategory,
-                  stateCode: rr.data.stateCode,
-                  cityCode: rr.data.cityCode,
-                });
-              })
-              .catch((err) => {
-                console.log(err);
+            try {
+              const rr = await getService(d.serviceUniqueId);
+              await Service.create({
+                serviceUniqueId: d.serviceUniqueId,
+                title: rr.data.title,
+                description: rr.data.description,
+                rules: rr.data.rules,
+                eventCategory: rr.data.eventCategory,
+                coverImage: rr.data.coverImage,
+                enumEventCategory: rr.data.enumEventCategory,
+                stateCode: rr.data.stateCode,
+                cityCode: rr.data.cityCode,
               });
+            } catch (err) {
+              console.log(err);
+            }
           }
         })
       );

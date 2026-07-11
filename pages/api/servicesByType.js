@@ -1,14 +1,18 @@
-// Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-
-import {ServicesDetailAsync} from "services/ristpanel";
+import ServicesControllers from "../../src/backend/controllers/services.controllers";
 
 export default function handler(req, res) {
-    ServicesDetailAsync().then(response => {
-        res.status(200).json({ data : response.data })
-    }).catch(err => {
-        console.log(err,'ee')
-        res.status(200).json({ error: err })
+  if (req.method !== "GET") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
+  const x = new ServicesControllers();
+
+  x.getServiceByType(req.query.id)
+    .then((services) => {
+      res.status(200).json({ data: services });
+    })
+    .catch((err) => {
+      console.log(err);
+      res.status(500).json({ status: "fail", error: err });
     });
-
-
 }

@@ -52,9 +52,4 @@ export const makeStore = (initialState) => {
 };
 
 // export an assembled wrapper
-export const wrapper = createWrapper(makeStore, { debug: true });
-
-export const setClientState = (clientState) => ({
-  type: SET_CLIENT_STATE,
-  payload: clientState,
-});
+export const wrapper = createWrapper(makeStore, { debug: false });

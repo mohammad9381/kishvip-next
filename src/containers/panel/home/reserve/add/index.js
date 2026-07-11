@@ -106,24 +106,35 @@ class PanelReserveAdd extends React.Component {
                 mob: Yup.string().required("شماره همراه را وارد نمایید"),
               })}
               onSubmit={async (fields, formikHelpers) => {
-                await fetch("/api/panel/addOrder", {
-                  method: "POST",
-                  body: JSON.stringify({
-                    ...fields,
-                    date_mehman:
-                      fields.date_mehman.year +
-                      "-" +
-                      fields.date_mehman.month +
-                      "-" +
-                      fields.date_mehman.day,
-                  }),
-                });
-                SuccessToast("با موفقیت ثبت گردید");
-                formikHelpers.resetForm();
-                this.setState({
-                  capacity: null,
-                  price: null,
-                });
+                try {
+                  const res = await fetch("/api/panel/addOrder", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                      ...fields,
+                      date_mehman:
+                        fields.date_mehman.year +
+                        "-" +
+                        fields.date_mehman.month +
+                        "-" +
+                        fields.date_mehman.day,
+                    }),
+                  });
+                  const data = await res.json();
+                  if (data.status === "success") {
+                    SuccessToast("با موفقیت ثبت گردید");
+                    formikHelpers.resetForm();
+                    this.setState({
+                      capacity: null,
+                      price: null,
+                    });
+                  } else {
+                    WarningToast("خطا در ثبت رزرو. مجددا تلاش کنید");
+                  }
+                } catch (err) {
+                  console.log(err);
+                  WarningToast("مشکل در ارتباط با سرور");
+                }
               }}
               render={({
                 errors,

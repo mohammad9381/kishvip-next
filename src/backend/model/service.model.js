@@ -29,15 +29,17 @@ module.exports = (sequelize, DataTypes) => {
       },
       gallery: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
       },
       isManifestNeeded: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: 0,
       },
       isManifestUniqueNumberNeeded: {
         type: DataTypes.INTEGER,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: 0,
       },
       enumEventCategory: {
         type: DataTypes.STRING,
@@ -53,11 +55,13 @@ module.exports = (sequelize, DataTypes) => {
       },
       price: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: "0",
       },
       priceDiscount: {
         type: DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+        defaultValue: "0",
       },
       is_trashed: {
         type: DataTypes.INTEGER,

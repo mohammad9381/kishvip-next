@@ -1,16 +1,19 @@
 import UserController from "../../src/backend/controllers/user.controller";
 
 export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
   var Kavenegar = require("kavenegar");
   var api = Kavenegar.KavenegarApi({
-    apikey: "6B6443754C57643041657130494D307837737052583632766741377148753669",
+    apikey: process.env.REACT_APP_KAVE_API_KEY,
   });
 
   let userC = new UserController();
 
-  console.log(req.query);
   userC
-    .verifyCode(req.query.cellphone, req.query.code, req.query.name)
+    .verifyCode(req.body.cellphone, req.body.code, req.body.name)
     .then((resp) => {
       console.log("resp", resp);
       if (!resp) {
@@ -20,6 +23,7 @@ export default function handler(req, res) {
       }
     })
     .catch((err) => {
-      console.log("sendcode", err);
+      console.log("verifyCode", err);
+      return res.status(500).json({ status: "fail", error: err.message });
     });
 }

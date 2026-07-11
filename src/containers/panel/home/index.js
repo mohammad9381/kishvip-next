@@ -1,8 +1,7 @@
 import React from "react";
 import Wrapper from "hoc/Wrapper/Wrapper";
 import { Button, Card, Form } from "react-bootstrap";
-import { ErrorToast } from "hoc/ToastNotify/ToastNotify";
-import { setLocale } from "yup";
+import { ErrorToast, SuccessToast } from "hoc/ToastNotify/ToastNotify";
 import { setLogin } from "services/user.service";
 
 class PanelHome extends React.Component {
@@ -37,17 +36,18 @@ class PanelHome extends React.Component {
         loading: true,
       });
 
-      const res = await fetch(
-        "/api/panel/login?cellphone=" + cellphone + "&password=" + code
-      );
+      const res = await fetch("/api/panel/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cellphone, password: code }),
+      });
       const data = await res.json();
 
       if (data.status === "success") {
-        this.setState({
-          data: data.data,
-          loading: false,
-        });
         setLogin(data.data);
+        SuccessToast("با موفقیت وارد شدید");
+        // redirect خودکار به داشبورد
+        window.location.href = "/panel";
       } else {
         this.setState({
           loading: false,
@@ -64,7 +64,7 @@ class PanelHome extends React.Component {
   }
 
   render() {
-    const { loading, data } = this.state;
+    const { loading } = this.state;
 
     return (
       <div className={"d-flex justify-content-center"}>
@@ -80,7 +80,7 @@ class PanelHome extends React.Component {
                 <Form.Group className="mb-3" controlId="formBasicEmail">
                   <Form.Label>شماره همراه خود را وارد کنید</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="tel"
                     placeholder=""
                     onChange={(e) => {
                       this.setState({
@@ -94,10 +94,10 @@ class PanelHome extends React.Component {
                 </Form.Group>
               </div>
               <div>
-                <Form.Group className="mb-3" controlId="formBasicEmail">
+                <Form.Group className="mb-3" controlId="formBasicPassword">
                   <Form.Label>کلمه عبور را وارد نمایید</Form.Label>
                   <Form.Control
-                    type="text"
+                    type="password"
                     placeholder=""
                     onChange={(e) => {
                       this.setState({

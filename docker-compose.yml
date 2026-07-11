@@ -1,0 +1,23 @@
+version: "3.8"
+
+# راه‌اندازی دیتابیس محلی برای توسعه
+# دستور اجرا: npm run db:start
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: kishvip-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: nextdb
+      MYSQL_USER: next
+      MYSQL_PASSWORD: nextpassworddb
+    ports:
+      - "3370:3306"
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - kishvip-mysql-data:/var/lib/mysql
+
+volumes:
+  kishvip-mysql-data:

@@ -2,6 +2,10 @@ import InvoiceController from "../../src/backend/controllers/invoice.controller"
 import { setTempBooking } from "services/ristpanel";
 
 export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
   const {
     fullname,
     cellphone,
@@ -11,7 +15,7 @@ export default function handler(req, res) {
     number,
     price,
     serviceUniqueId,
-  } = req.query;
+  } = req.body;
 
   const x = new InvoiceController();
   x.saveInvoice(

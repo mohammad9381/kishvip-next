@@ -1,6 +1,6 @@
-const query = require("../db/db-connection");
 const db = require("../model");
-const Ticket = db.ticker;
+const Ticket = db.ticket;
+
 class TicketController {
   async setTicket(invoice_id, cellphone, resp) {
     await Ticket.create({

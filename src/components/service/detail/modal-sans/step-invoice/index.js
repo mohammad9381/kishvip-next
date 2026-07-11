@@ -24,8 +24,13 @@ class StepInvoice extends React.Component {
       start_check: true,
     });
     try {
-      const { sans, jm, selectTicketType, number, data, user, name } =
-        this.props;
+      const { sans, selectTicketType, number, data } = this.props;
+
+      // guard: اگر licences وجود نداشت
+      if (!data.licences || !data.licences[0]) {
+        ErrorToast("اطلاعات سرویس کامل نیست");
+        return;
+      }
 
       const res = await fetch(
         "/api/checkAvalibity?TicketTypeUniqueId=" +
@@ -54,36 +59,32 @@ class StepInvoice extends React.Component {
       }
     } catch (err) {
       console.log("check exist error", err);
+      ErrorToast("مشکل در ارتباط با سرور");
     }
   }
 
   async submitReserve() {
     try {
-      const { sans, jm, selectTicketType, number, data, user, name } =
-        this.props;
-      const priceFInal =
+      const { sans, selectTicketType, number, data, user, name } = this.props;
+      const priceFinal =
         selectTicketType.priceAfterDiscount !== selectTicketType.price
           ? selectTicketType.priceAfterDiscount
           : selectTicketType.price;
 
-      const res = await fetch(
-        "/api/submitReserve?ticketTypeUniqueId=" +
-          selectTicketType.ticketTypeUniqueId +
-          "&sansUniqueId=" +
-          sans.sansUniqueId +
-          "&licenseUniqueId=" +
-          data.licences[0].licenceUniqueId +
-          "&number=" +
-          number +
-          "&fullname=" +
-          name +
-          "&cellphone=" +
-          user.cellphone +
-          "&price=" +
-          priceFInal +
-          "&serviceUniqueId=" +
-          data.serviceUniqueId
-      );
+      const res = await fetch("/api/submitReserve", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          ticketTypeUniqueId: selectTicketType.ticketTypeUniqueId,
+          sansUniqueId: sans.sansUniqueId,
+          licenseUniqueId: data.licences[0].licenceUniqueId,
+          number: number,
+          fullname: name,
+          cellphone: user.cellphone,
+          price: priceFinal,
+          serviceUniqueId: data.serviceUniqueId,
+        }),
+      });
       const dataFetch = await res.json();
       if (dataFetch.status === "success") {
         if (dataFetch.data) {
@@ -99,20 +100,17 @@ class StepInvoice extends React.Component {
         ErrorToast("مشکلی رخ داده است دوباره اقدام کنید");
       }
     } catch (err) {
-      console.log("check exist error", err);
+      console.log("submit reserve error", err);
+      ErrorToast("مشکل در ارتباط با سرور");
     }
   }
 
-  transferBank() {}
-
   render() {
     const { sans, jm, selectTicketType, number, data, user, name } = this.props;
-    const priceFInal =
+    const priceFinal =
       selectTicketType.priceAfterDiscount !== selectTicketType.price
         ? selectTicketType.priceAfterDiscount
         : selectTicketType.price;
-
-    console.log(data);
 
     const { start_check, exist_status, submit_reserve } = this.state;
     return (
@@ -122,14 +120,14 @@ class StepInvoice extends React.Component {
         </div>
         <div>
           <BoxDetailSans
-            priceFInal={priceFInal}
+            priceFinal={priceFinal}
             jm={jm}
             sans={sans}
             number={number}
             data={data}
           />
         </div>
-        <div className={"pt-2 pb-2"}>مور تایید شما است.</div>
+        <div className={"pt-2 pb-2"}>لطفاً رزرو خود را تأیید کنید.</div>
         <div>
           {!start_check ? (
             <Button

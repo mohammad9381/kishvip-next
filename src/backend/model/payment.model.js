@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: true,
       },
       total_price: {
-        type: DataTypes.STRING,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       track_id: {

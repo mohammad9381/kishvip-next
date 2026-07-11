@@ -1,6 +1,10 @@
 import OrderController from "../../../src/backend/controllers/order.controller";
 
 export default function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
   const orderController = new OrderController();
 
   orderController

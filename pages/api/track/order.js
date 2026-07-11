@@ -3,6 +3,10 @@ import InvoiceController from "../../../src/backend/controllers/invoice.controll
 import ServicesControllers from "../../../src/backend/controllers/services.controllers";
 
 export default function handler(req, res) {
+  if (req.method !== "GET") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
   try {
     const { cellphone, code } = req.query;
 
@@ -43,9 +47,10 @@ export default function handler(req, res) {
       .catch((err) => {
         return res
           .status(500)
-          .json({ status: "fail", error: err, type: "fail payment " });
+          .json({ status: "fail", error: err, type: "fail payment" });
       });
   } catch (err) {
     console.log(err);
+    return res.status(500).json({ status: "fail", error: err });
   }
 }

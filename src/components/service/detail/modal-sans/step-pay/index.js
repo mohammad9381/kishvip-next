@@ -16,37 +16,40 @@ class StepPayment extends React.Component {
   }
 
   async sendGateway(invoice) {
+    if (this.state.loading) return;
+
     this.setState({
       loading: true,
     });
     try {
-      const res = await fetch("/api/payment/zibal?id=" + invoice.id);
+      const res = await fetch("/api/payment/zibal?id=" + invoice.id, {
+        method: "POST",
+      });
       const dataFetch = await res.json();
-      console.log(dataFetch);
       if (dataFetch.status === "success") {
-        // console.log();
-        document.location.href = dataFetch.data.paymentUrl;
+        if (dataFetch.data && dataFetch.data.paymentUrl) {
+          document.location.href = dataFetch.data.paymentUrl;
+        } else {
+          ErrorToast("درگاه پرداخت در دسترس نیست. بعداً تلاش کنید");
+          this.setState({ loading: false });
+        }
       } else {
         ErrorToast("مشکلی در ارتباط با درگاه دوباره اقدام کنید");
         this.setState({ loading: false });
       }
     } catch (err) {
       ErrorToast("مشکلی در ارتباط با درگاه دوباره اقدام کنید");
-      console.log("try", err);
+      console.log("gateway error", err);
       this.setState({ loading: false });
     }
   }
 
   render() {
-    const { invoice, data } = this.props;
+    const { invoice } = this.props;
     const { loading } = this.state;
-    console.log(invoice);
+
     return (
-      <div
-        onClick={(e) => {
-          if (!loading) this.sendGateway(invoice);
-        }}
-      >
+      <div>
         <div className={"d-flex justify-content-center"}>
           <div>
             <img src={"/images/zibal.png"} style={{ maxWidth: 300 }} />
@@ -57,6 +60,7 @@ class StepPayment extends React.Component {
             variant={"info"}
             className={"text-center mt-5"}
             disabled={loading}
+            onClick={() => this.sendGateway(invoice)}
           >
             {loading ? (
               "در حال انتقال به درگاه زیبال"
@@ -64,7 +68,7 @@ class StepPayment extends React.Component {
               <Wrapper>
                 برای پرداخت فاکتور به مبلغ
                 {"  " +
-                  latinToPersian(formatNumber(invoice.total_price)) +
+                  latinToPersian(formatNumber(invoice.total_price || 0)) +
                   "  "}
                 <span className={"rial"}>ریال</span>
               </Wrapper>

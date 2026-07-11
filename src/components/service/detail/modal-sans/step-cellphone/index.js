@@ -5,6 +5,7 @@ import {
   SuccessToast,
   WarningToast,
 } from "hoc/ToastNotify/ToastNotify";
+import { BoxDetailSans } from "components/service/detail/modal-sans/util";
 
 class StepCellphone extends React.Component {
   constructor(props) {
@@ -30,10 +31,7 @@ class StepCellphone extends React.Component {
       return;
     }
 
-    if (cellphone === "" || cellphone == null) {
-      WarningToast("شماره همراه را وارد نمایید");
-      return;
-    } else if (cellphone.length !== 11 && !Number.isInteger(cellphone)) {
+    if (cellphone === "" || cellphone == null || cellphone.length !== 11) {
       WarningToast("شماره همراه را صحیح وارد نمایید");
       return;
     }
@@ -43,9 +41,11 @@ class StepCellphone extends React.Component {
     });
 
     try {
-      const res = await fetch(
-        "/api/sendCode?cellphone=" + cellphone + "&name=" + name
-      );
+      const res = await fetch("/api/sendCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cellphone, name }),
+      });
       const data = await res.json();
       if (data.status === "success") {
         SuccessToast("کد با موفقیت ارسال شد");
@@ -78,14 +78,11 @@ class StepCellphone extends React.Component {
     this.setState({ loading2: true });
 
     try {
-      const res = await fetch(
-        "/api/verifyCode?cellphone=" +
-          cellphone +
-          "&name=" +
-          name +
-          "&code=" +
-          code
-      );
+      const res = await fetch("/api/verifyCode", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ cellphone, name, code }),
+      });
       const data = await res.json();
       if (data.status === "success") {
         this.props.selectUser(data.user, name);
@@ -96,7 +93,6 @@ class StepCellphone extends React.Component {
       }
     } catch (e) {
       ErrorToast("مشکل در بررسی کد");
-
       this.setState({ loading2: false });
     }
   }
@@ -104,7 +100,7 @@ class StepCellphone extends React.Component {
   render() {
     const { sans, jm, selectTicketType, number } = this.props;
     const { sended, loading1, loading2 } = this.state;
-    const priceFInal =
+    const priceFinal =
       selectTicketType.priceAfterDiscount !== selectTicketType.price
         ? selectTicketType.priceAfterDiscount
         : selectTicketType.price;
@@ -113,22 +109,21 @@ class StepCellphone extends React.Component {
       <div>
         <div>
           برای رزرو اطلاعات زیر را تکمیل نمایید
-          {/*<br />*/}
-          {/*<BoxDetailSans*/}
-          {/*  priceFInal={priceFInal}*/}
-          {/*  jm={jm}*/}
-          {/*  sans={sans}*/}
-          {/*  number={number}*/}
-          {/*/>*/}
+          <BoxDetailSans
+            priceFinal={priceFinal}
+            jm={jm}
+            sans={sans}
+            number={number}
+          />
           <br />
           <br />
           <ListGroup>
             <ListGroup.Item>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Group className="mb-3" controlId="formBasicCellphone">
                 <Form.Label>شماره همراه خود را وارد کنید</Form.Label>
                 <Form.Control
                   disabled={sended || loading1}
-                  type="text"
+                  type="tel"
                   placeholder="09121112233"
                   onChange={(e) => {
                     this.setState({
@@ -140,7 +135,7 @@ class StepCellphone extends React.Component {
                   کد رهگیری به این شماره ارسال خواهد شد
                 </Form.Text>
               </Form.Group>
-              <Form.Group className="mb-3" controlId="formBasicEmail">
+              <Form.Group className="mb-3" controlId="formBasicName">
                 <Form.Label>نام و نام خانوادگی</Form.Label>
                 <Form.Control
                   disabled={sended || loading1}
@@ -158,7 +153,7 @@ class StepCellphone extends React.Component {
               </Form.Group>
               {sended ? (
                 <div>
-                  <Form.Group className="mb-3" controlId="formBasicEmail">
+                  <Form.Group className="mb-3" controlId="formBasicCode">
                     <Form.Label>کد دریافتی را وارد نمایید</Form.Label>
                     <Form.Control
                       type="text"

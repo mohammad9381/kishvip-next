@@ -2,14 +2,11 @@ import React from "react";
 import { getUserData } from "services/user.service";
 import { Card, Col, Row } from "react-bootstrap";
 import { latinToPersian } from "utilsFolder/lastinToPersian";
-import { Link } from "react-router-dom";
 import NavLink from "hoc/NavLink";
 
 const Menus = [
   { name: "ثبت رزرو", icon: "", link: "/panel/addReserve" },
   { name: "لیست رزروها", icon: "", link: "/panel/listReserve" },
-  { name: "ثبت حضور", icon: "", link: "/panel/useReserve" },
-  { name: "ویرایش محصول", icon: "", link: "/panel/editProduct" },
 ];
 
 class PanelDashboard extends React.Component {
@@ -23,7 +20,18 @@ class PanelDashboard extends React.Component {
 
   render() {
     const { user } = this.state;
-    console.log(user);
+
+    // guard: اگر کاربر لاگین نیست
+    if (!user) {
+      return (
+        <div className={"m-4 text-center"}>
+          <Card>
+            <Card.Body>برای مشاهده پنل ابتدا وارد شوید.</Card.Body>
+          </Card>
+        </div>
+      );
+    }
+
     return (
       <div className={"m-4"}>
         <Row>

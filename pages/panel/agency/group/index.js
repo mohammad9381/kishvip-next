@@ -1,20 +1,13 @@
-import React from "react";
-import Header from "components/layout/header7";
-import { Container } from "react-bootstrap";
-import Footer from "components/layout/footer7";
-import PanelHome from "containers/panel/home";
-import { isAuthenticaded } from "services/user.service";
-import PanelDashboard from "containers/panel/home/dashboard";
+// این مسیر قبلاً کپی تکراری از /panel بود — هدایت به مسیر اصلی
+export default function AgencyGroup() {
+  return null;
+}
 
-export default function ContactPage(props) {
-  return (
-    <div>
-      <Header />
-      <hr />
-      <Container>
-        {isAuthenticaded() ? <PanelDashboard /> : <PanelHome />}
-      </Container>
-      <Footer />
-    </div>
-  );
+export async function getServerSideProps() {
+  return {
+    redirect: {
+      destination: "/panel",
+      permanent: false,
+    },
+  };
 }

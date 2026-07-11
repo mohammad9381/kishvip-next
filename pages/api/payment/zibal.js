@@ -4,6 +4,10 @@ import PaymentController from "../../../src/backend/controllers/payment.controll
 const Zibal = require("zibal");
 
 export default function handler(req, res) {
+  if (req.method !== "POST") {
+    return res.status(405).json({ status: "error", message: "Method Not Allowed" });
+  }
+
   const { id } = req.query;
 
   const invController = new InvoiceController();
@@ -17,7 +21,6 @@ export default function handler(req, res) {
         .then((py) => {
           const z = new Zibal();
 
-          // console.log(process.env.REACT_APP_ZIBAL_API_KEY);
           z.init({
             merchant: process.env.REACT_APP_ZIBAL_MERCHENT,
             callbackUrl:
@@ -25,15 +28,11 @@ export default function handler(req, res) {
               "/payment/verify?id=" +
               py.uniq_code,
             logLevel: 2,
-            // 0: none (default in production)
-            // 1: error
-            // 2: error + info (default)
           });
 
           z.request({ amount: py.total_price, orderId: py.uniq_code })
             .then((result) => {
               console.log(result);
-              // { trackId: 1533727744287, result: 100, message: 'success', statusMessage: 'با موفقیت تایید شد.' }
               pyController
                 .addTrackId(py.id, result.trackId)
                 .then((py2) => {
@@ -43,21 +42,17 @@ export default function handler(req, res) {
                 })
                 .catch((err) => {
                   return res.status(500).json({
-                    status: "success",
+                    status: "fail",
                     error: err,
-                    type: "add track ",
+                    type: "add track",
                   });
                 });
-              // const url = result.paymentUrl;
-              // return res.redirect(307, url);
             })
             .catch((err) => {
               console.error(err);
               return res
                 .status(500)
-                .json({ status: "success", error: err, type: "zibal request" });
-
-              // { result: 103, message: 'authentication error', statusMessage: '{merchant} غیرفعال' }
+                .json({ status: "fail", error: err, type: "zibal request" });
             });
         })
         .catch((err) => {
@@ -75,7 +70,4 @@ export default function handler(req, res) {
         type: "get invoice",
       });
     });
-
-  // const url = z.(1533727744287);
-  // console.log(url);
 }

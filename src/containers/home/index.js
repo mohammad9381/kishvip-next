@@ -6,17 +6,10 @@ import {
   ExibitionContent1,
   homeSliderContent7,
 } from "components/element/SliderContent";
-import BlogSlider1 from "components/element/blogSlider1";
-import Testmonial5 from "components/element/testmonial5";
 import ExibitionSlider1 from "components/element/exibitionSlider1";
 import HomeSlider from "components/element/homeSlider2";
-import Gallery2 from "components/element/gallery2";
-import ScrollToTop from "components/element/scrollToTop";
-import Team4 from "components/element/team4";
 import NavLink from "hoc/NavLink";
-import LastBlog from "containers/home/last-blog";
 import SixBox from "containers/home/six-box";
-import OurTeam from "containers/home/our-team";
 
 // import '../css/skin/skin-5.min.css';
 

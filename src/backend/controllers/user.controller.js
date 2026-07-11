@@ -2,19 +2,13 @@ const db = require("../model");
 const Cellphone_code = db.cellphone_code;
 const User_cellphone = db.user_cellphone;
 
-const dotenv = require("dotenv");
-dotenv.config();
-
 class UserController {
   async getCode(cellphone) {
-    const dataQuery1 = await Cellphone_code.findOne(
-      {
-        cellphone: cellphone,
-        is_used: "0",
-      },
-      { raw: true }
-    );
-    console.log(dataQuery1);
+    const dataQuery1 = await Cellphone_code.findOne({
+      where: { cellphone: cellphone, is_used: "0" },
+      raw: true,
+    });
+
     if (dataQuery1 === null) {
       let code1 = Math.floor(100000 + Math.random() * 900000);
 
@@ -30,9 +24,7 @@ class UserController {
 
   async verifyCode(cellphone, code, name) {
     let dataQuery1 = await Cellphone_code.findOne({
-      cellphone: cellphone,
-      code: code,
-      is_used: "0",
+      where: { cellphone: cellphone, code: code, is_used: "0" },
     });
 
     if (dataQuery1) {
@@ -42,18 +34,18 @@ class UserController {
         },
       });
 
-      let userCHeck = await User_cellphone.findOne({
-        cellphone: cellphone,
+      let userCheck = await User_cellphone.findOne({
+        where: { cellphone: cellphone },
       });
 
-      if (userCHeck) {
-        return userCHeck;
+      if (userCheck) {
+        return userCheck;
       } else {
-        let userCHeck = await User_cellphone.create({
+        let newUser = await User_cellphone.create({
           cellphone: cellphone,
           name: name,
         });
-        return userCHeck;
+        return newUser;
       }
     } else {
       return false;
