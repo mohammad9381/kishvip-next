@@ -12,6 +12,9 @@
  * نکته: قبل از اجرا مطمئن شو دیتابیس بالا است:  npm run db:start
  */
 
+// لود متغیرهای محیطی از فایل .env
+require("dotenv").config({ path: require("path").resolve(__dirname, "../.env") });
+
 const sequelize = require("../src/backend/db/Sequelize-config");
 const db = require("../src/backend/model");
 const bcrypt = require("bcryptjs");
@@ -171,8 +174,10 @@ async function main() {
     console.log(c.green("\n🎉 راه‌اندازی دیتابیس کامل شد"));
     process.exit(0);
   } catch (err) {
-    console.error(c.red("\n❌ خطا در راه‌اندازی دیتابیس:"), err.message);
-    if (err.original) console.error("  علت:", err.original.message);
+    console.error(c.red("\n❌ خطا در راه‌اندازی دیتابیس:"));
+    console.error(c.red("  نام خطا:"), err.name || err.code || "نامشخص");
+    console.error(c.red("  توضیح:"), err.message || err.original?.message || err.parent?.message || "بدون توضیح");
+    if (err.original) console.error(c.red("  جزئیات:"), JSON.stringify(err.original));
     process.exit(1);
   }
 }
